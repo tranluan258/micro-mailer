@@ -1,7 +1,7 @@
-import { MessageQueue } from '../interface/MessageQueue';
-import IMail from './IMail';
-import nodemailer from 'nodemailer';
-import 'dotenv/config';
+import { MessageQueue } from "../interface/messageQueue";
+import IMail from "./IMail";
+import nodemailer from "nodemailer";
+import "dotenv/config";
 
 const { EMAIL_ADMIN, PASSWORD_EMAIL } = process.env;
 class SendWithGmail implements IMail {
@@ -14,7 +14,7 @@ class SendWithGmail implements IMail {
   public static getInstance(): SendWithGmail {
     if (!SendWithGmail.instance) {
       let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
+        host: "smtp.gmail.com",
         port: 465,
         secure: true,
         auth: {
@@ -29,15 +29,12 @@ class SendWithGmail implements IMail {
     return SendWithGmail.instance;
   }
 
-  public sendMail(
-    emailClient: string,
-    attachments: MessageQueue['attachments']
-  ): void {
+  public sendMail(emailClient: string, attachments: MessageQueue["attachments"]): void {
     let attachmentsSend: { filename: string; content: Buffer }[] = [];
 
     if (attachments) {
       attachments.forEach((element) => {
-        const fileContents = Buffer.from(element.content, 'base64');
+        const fileContents = Buffer.from(element.content, "base64");
         attachmentsSend.push({
           filename: element.filename,
           content: fileContents,
@@ -45,7 +42,7 @@ class SendWithGmail implements IMail {
       });
     }
 
-    let content = ' ';
+    let content = " ";
     content += `
         <div style="padding: 10px; background-color: white;">
             Hello ${emailClient}
@@ -53,9 +50,9 @@ class SendWithGmail implements IMail {
         `;
 
     let mailOptions = {
-      from: 'Admin',
+      from: "Admin",
       to: emailClient,
-      subject: 'Send Email',
+      subject: "Send Email",
       html: content,
       attachments: attachmentsSend,
     };
