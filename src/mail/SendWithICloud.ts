@@ -1,20 +1,22 @@
 import IMail from "./IMail";
 import nodemailer from "nodemailer";
 import "dotenv/config";
-import { MessageQueue } from "../interface/messageQueue";
+import { MessageQueue } from "../datatype/messageQueue";
 
 const { EMAIL_ADMIN, PASSWORD_EMAIL } = process.env;
 
+type transporter = nodemailer.Transporter;
+
 class SendWithICloud implements IMail {
   private static instance: SendWithICloud;
-  private transporter: nodemailer.Transporter;
-  private constructor(transporter: nodemailer.Transporter) {
+  private transporter: transporter;
+  private constructor(transporter: transporter) {
     this.transporter = transporter;
   }
 
   public static getInstance(): SendWithICloud {
     if (!SendWithICloud.instance) {
-      let transporter = nodemailer.createTransport({
+      let transporter: transporter = nodemailer.createTransport({
         host: "smtp.icloud.com",
         port: 465,
         secure: true,
@@ -43,8 +45,7 @@ class SendWithICloud implements IMail {
       });
     }
 
-    let content = " ";
-    content += `
+    let content: string = `
         <div style="padding: 10px; background-color: white;">
             Hello ${emailClient}
         </div>

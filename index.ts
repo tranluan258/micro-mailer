@@ -1,6 +1,6 @@
-import { MessageQueue } from "./src/interface/messageQueue";
+import { MessageQueue } from "./src/datatype/messageQueue";
 import connection from "./src/lib/rabbitmq.config";
-import MailFactory from "./src/mail/MailFactory";
+import MailFactory from "./src/mail/mailFactory";
 const QUEUE_NAME = "sendMail";
 
 function main() {
