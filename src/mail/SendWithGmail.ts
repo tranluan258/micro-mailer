@@ -2,10 +2,9 @@ import { MessageQueue } from "../datatype/messageQueue";
 import IMail from "./IMail";
 import nodemailer from "nodemailer";
 import "dotenv/config";
-import fs from "fs";
 import ejs from "ejs";
 
-const { EMAIL_ADMIN, PASSWORD_EMAIL } = process.env;
+const { GMAIL_HOST, GMAIL_PASSWORD } = process.env;
 type transporter = nodemailer.Transporter;
 
 class SendWithGmail implements IMail {
@@ -18,12 +17,12 @@ class SendWithGmail implements IMail {
   public static getInstance(): SendWithGmail {
     if (!SendWithGmail.instance) {
       let transporter: transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
+        service: "Gmail",
         port: 465,
         secure: true,
         auth: {
-          user: EMAIL_ADMIN,
-          pass: PASSWORD_EMAIL,
+          user: GMAIL_HOST,
+          pass: GMAIL_PASSWORD,
         },
       });
 
@@ -49,14 +48,6 @@ class SendWithGmail implements IMail {
     const name = "Luan";
 
     let content = await ejs.renderFile("./src/emailTemplate/email.ejs", { name: name });
-
-    // let contentHtml = fs.readFileSync("./src/emailTemplate/email.");
-
-    // let content: string = `
-    //     <div style="padding: 10px; background-color: white;">
-    //         Hello ${emailClient}
-    //     </div>
-    //     `;
 
     let mailOptions = {
       from: "Admin",

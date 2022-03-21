@@ -2,8 +2,9 @@ import IMail from "./IMail";
 import nodemailer from "nodemailer";
 import "dotenv/config";
 import { MessageQueue } from "../datatype/messageQueue";
+import ejs from "ejs";
 
-const { EMAIL_ADMIN, PASSWORD_EMAIL } = process.env;
+const { HOST_OUTLOOK, PASSWORD_OUTLOOK } = process.env;
 
 type transporter = nodemailer.Transporter;
 
@@ -16,13 +17,15 @@ class SendWithICloud implements IMail {
 
   public static getInstance(): SendWithICloud {
     if (!SendWithICloud.instance) {
+      let account = nodemailer.createTestAccount();
       let transporter: transporter = nodemailer.createTransport({
-        host: "smtp.icloud.com",
+        // host: "smtp.office365.com",
+        service: "Outlook365",
         port: 465,
         secure: true,
         auth: {
-          user: EMAIL_ADMIN,
-          pass: PASSWORD_EMAIL,
+          user: HOST_OUTLOOK,
+          pass: PASSWORD_OUTLOOK,
         },
       });
 
@@ -32,7 +35,7 @@ class SendWithICloud implements IMail {
     return SendWithICloud.instance;
   }
 
-  public sendMail(emailClient: string, attachments: MessageQueue["attachments"]): void {
+  public async sendMail(emailClient: string, attachments: MessageQueue["attachments"]): Promise<any> {
     let attachmentsSend: { filename: string; content: Buffer }[] = [];
 
     if (attachments) {
@@ -45,11 +48,10 @@ class SendWithICloud implements IMail {
       });
     }
 
-    let content: string = `
-        <div style="padding: 10px; background-color: white;">
-            Hello ${emailClient}
-        </div>
-        `;
+    const name = "Luan";
+
+    let content = await ejs.renderFile("./src/emailTemplate/email.ejs", { name: name });
+
     let mailOptions = {
       from: "Admin",
       to: emailClient,

@@ -10,7 +10,7 @@ function main() {
     channel.consume(QUEUE_NAME, (msg) => {
       if (msg) {
         const data: MessageQueue = JSON.parse(msg.content.toString());
-        mailFactory.getMailServer({ type: data.type }).sendMail(data.email, data.attachments);
+        mailFactory.getMailServer().sendMail(data.email, data.attachments);
         channel.ack(msg);
       }
     });
